@@ -63,3 +63,7 @@ npm run dev
 ## Database
 
 Import the `room_booking.sql` file into MySQL.
+
+## Live Demo
+
+https://room-booking-system-sigma.vercel.app/
