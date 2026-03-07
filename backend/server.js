@@ -18,23 +18,17 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: function(origin, callback) {
-
-    if(!origin) return callback(null, true);
-
-    if(allowedOrigins.indexOf(origin) !== -1){
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-
-  },
+  origin: allowedOrigins,
   methods: ["GET","POST","PUT","DELETE"],
   allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
 }));
 
+
+
 app.use(express.json());
+
+
 app.get("/", (req, res) => {
   res.send("StayEase API running");
 });
@@ -43,11 +37,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/bookings", bookingRoutes);
-
-
-app.get("/", (req,res)=>{
-  res.send("StayEase API running");
-});
 
 
 const PORT = process.env.PORT || 5000;
