@@ -8,13 +8,15 @@ export const register = async (req, res) => {
 
   try {
 
-    const [existing] = await db.query(
+    const [existingUser] = await db.query(
       "SELECT * FROM users WHERE email = ?",
       [email]
     );
 
-    if (existing.length > 0) {
-      return res.status(400).json({ message: "Email already registered" });
+    if (existingUser.length > 0) {
+      return res.status(400).json({
+        message: "User already registered. Please login."
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -24,11 +26,18 @@ export const register = async (req, res) => {
       [name, email, hashedPassword]
     );
 
-    res.json({ message: "User registered successfully" });
+    res.status(201).json({
+      message: "Registration successful"
+    });
 
   } catch (error) {
+
     console.log(error);
-    res.status(500).json({ message: "Server error" });
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
   }
 
 };
