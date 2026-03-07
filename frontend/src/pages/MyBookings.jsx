@@ -48,7 +48,7 @@ function MyBookings() {
                     return;
                 }
 
-                const res = await API.get(`/bookings/user/${user.id}`);
+                const res = await API.get("/bookings/my");
 
                 setBookings(res.data);
 
