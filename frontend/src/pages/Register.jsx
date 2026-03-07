@@ -33,7 +33,9 @@ function Register() {
 
         try {
 
-            await API.post("/auth/register", { name, email, password });
+            const res = await API.post("/auth/register", { name, email, password });
+
+            console.log(res.data);
 
             alert("Account created successfully");
 
@@ -42,19 +44,15 @@ function Register() {
             setPassword("");
             setStrength("");
 
-            navigate("/");
+            navigate("/login");
 
         } catch (error) {
 
+            console.log(error.response?.data);
+
             alert(error.response?.data?.message || "Registration error");
 
-            setName("");
-            setEmail("");
-            setPassword("");
-            setStrength("");
-
         }
-
     };
 
     return (
