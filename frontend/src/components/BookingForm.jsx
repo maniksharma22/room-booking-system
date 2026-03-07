@@ -99,11 +99,6 @@ function BookingForm({ roomId }) {
                 />
             </div>
 
-            {error && (
-                <p style={{color:"red", fontSize:"14px", marginTop:"5px"}}>
-                    {error}
-                </p>
-            )}
 
             <div className="input-group">
                 <label>Adults</label>
@@ -124,6 +119,12 @@ function BookingForm({ roomId }) {
                     onChange={(e) => setChildren(e.target.value)}
                 />
             </div>
+            
+            {error && (
+                <p style={{ color: "red", fontSize: "14px", marginTop: "5px" }}>
+                    {error}
+                </p>
+            )}
 
             <button type="submit" className="book-btn">
                 Book Room
