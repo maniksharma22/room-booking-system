@@ -15,14 +15,22 @@ function BookingForm({ roomId }) {
 
         e.preventDefault();
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Please login first");
+            navigate("/login");
+            return;
+        }
+
         try {
 
             await API.post("/bookings", {
                 room_id: roomId,
                 start_date: startDate,
                 end_date: endDate,
-                adults,
-                children
+                adults: parseInt(adults),
+                children: parseInt(children)
             });
 
             alert("Booking successful");
@@ -51,6 +59,7 @@ function BookingForm({ roomId }) {
                 <input
                     type="date"
                     value={startDate}
+                    required
                     onChange={(e) => setStartDate(e.target.value)}
                 />
             </div>
@@ -60,6 +69,7 @@ function BookingForm({ roomId }) {
                 <input
                     type="date"
                     value={endDate}
+                    required
                     onChange={(e) => setEndDate(e.target.value)}
                 />
             </div>
@@ -70,7 +80,8 @@ function BookingForm({ roomId }) {
                     type="number"
                     min="1"
                     value={adults}
-                    onChange={(e) => setAdults(e.target.value)}
+                    required
+                    onChange={(e) => setAdults(parseInt(e.target.value))}
                 />
             </div>
 
@@ -80,7 +91,7 @@ function BookingForm({ roomId }) {
                     type="number"
                     min="0"
                     value={children}
-                    onChange={(e) => setChildren(e.target.value)}
+                    onChange={(e) => setChildren(parseInt(e.target.value))}
                 />
             </div>
 
