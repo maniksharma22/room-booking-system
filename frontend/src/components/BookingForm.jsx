@@ -15,11 +15,12 @@ function BookingForm({ roomId }) {
 
         e.preventDefault();
 
-        const token = localStorage.getItem("token");
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-        if (!token) {
-            alert("Please login first");
-            navigate("/login");
+        // ❌ Wrong date validation
+        if (end <= start) {
+            alert("Check-out date must be after check-in date");
             return;
         }
 
@@ -29,8 +30,8 @@ function BookingForm({ roomId }) {
                 room_id: roomId,
                 start_date: startDate,
                 end_date: endDate,
-                adults: parseInt(adults),
-                children: parseInt(children)
+                adults,
+                children
             });
 
             alert("Booking successful");
@@ -80,8 +81,7 @@ function BookingForm({ roomId }) {
                     type="number"
                     min="1"
                     value={adults}
-                    required
-                    onChange={(e) => setAdults(parseInt(e.target.value))}
+                    onChange={(e) => setAdults(e.target.value)}
                 />
             </div>
 
@@ -91,7 +91,7 @@ function BookingForm({ roomId }) {
                     type="number"
                     min="0"
                     value={children}
-                    onChange={(e) => setChildren(parseInt(e.target.value))}
+                    onChange={(e) => setChildren(e.target.value)}
                 />
             </div>
 
