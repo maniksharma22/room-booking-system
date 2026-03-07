@@ -11,21 +11,32 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://room-booking-system-sigma.vercel.app"
-];
+app.use((req,res,next)=>{
 
-const corsOptions = {
-  origin: allowedOrigins,
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"],
-  credentials: true
-};
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://room-booking-system-sigma.vercel.app"
+  );
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
 
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,OPTIONS"
+  );
+
+  if(req.method === "OPTIONS"){
+    return res.sendStatus(200);
+  }
+
+  next();
+
+});
+
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req,res)=>{
