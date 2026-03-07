@@ -2,11 +2,13 @@ import db from "../config/db.js";
 
 export const createBooking = async (req, res) => {
 
-  const { user_id, room_id, start_date, end_date, adults, children } = req.body;
+  const { room_id, start_date, end_date, adults, children } = req.body;
+
+  const user_id = req.user.id;
 
   try {
 
-    const [result] = await db.query(
+    await db.query(
       "INSERT INTO bookings (user_id, room_id, start_date, end_date, adults, children) VALUES (?, ?, ?, ?, ?, ?)",
       [user_id, room_id, start_date, end_date, adults, children]
     );
@@ -22,17 +24,18 @@ export const createBooking = async (req, res) => {
 
 };
 
+
 export const getMyBookings = async (req, res) => {
 
-  const user_id = req.params.user_id;
+  const user_id = req.user.id;
 
   try {
 
     const [rows] = await db.query(
       `SELECT bookings.*, rooms.name, rooms.price_per_night, rooms.location
-   FROM bookings
-   JOIN rooms ON bookings.room_id = rooms.id
-   WHERE bookings.user_id = ?`,
+       FROM bookings
+       JOIN rooms ON bookings.room_id = rooms.id
+       WHERE bookings.user_id = ?`,
       [user_id]
     );
 

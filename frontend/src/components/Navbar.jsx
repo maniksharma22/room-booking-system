@@ -1,19 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Navbar() {
 
     const [menuOpen, setMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        window.location = "/login";
+        navigate("/login");
+        window.location.reload();
     };
 
     return (
 
         <>
-
             {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)}></div>}
 
             <div className="navbar">
@@ -44,7 +45,6 @@ function Navbar() {
             </div>
 
         </>
-
     );
 }
 
