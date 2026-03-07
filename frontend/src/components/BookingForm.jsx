@@ -8,6 +8,7 @@ function BookingForm({ roomId }) {
     const [endDate, setEndDate] = useState("");
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
@@ -17,17 +18,10 @@ function BookingForm({ roomId }) {
 
         e.preventDefault();
 
-        if (!startDate || !endDate) {
-            alert("Please select check-in and check-out dates");
-            return;
-        }
-
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        if (end <= start) {
-            alert("Check-out date must be after check-in date");
-            window.location.reload();
+        if (error) {
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
             return;
         }
 
@@ -41,16 +35,40 @@ function BookingForm({ roomId }) {
                 children
             });
 
-            alert("Booking successful");
-
             window.location.reload();
 
         } catch (err) {
 
-            alert(err.response?.data?.message || "Booking failed");
+            setError("Booking failed");
 
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
 
+        }
+
+    };
+
+    const handleStartDate = (value) => {
+
+        setStartDate(value);
+
+        if (endDate && new Date(endDate) <= new Date(value)) {
+            setError("Check-out date must be after check-in date");
+        } else {
+            setError("");
+        }
+
+    };
+
+    const handleEndDate = (value) => {
+
+        setEndDate(value);
+
+        if (startDate && new Date(value) <= new Date(startDate)) {
+            setError("Check-out date must be after check-in date");
+        } else {
+            setError("");
         }
 
     };
@@ -66,7 +84,7 @@ function BookingForm({ roomId }) {
                     min={today}
                     value={startDate}
                     required
-                    onChange={(e) => setStartDate(e.target.value)}
+                    onChange={(e) => handleStartDate(e.target.value)}
                 />
             </div>
 
@@ -77,9 +95,15 @@ function BookingForm({ roomId }) {
                     min={startDate || today}
                     value={endDate}
                     required
-                    onChange={(e) => setEndDate(e.target.value)}
+                    onChange={(e) => handleEndDate(e.target.value)}
                 />
             </div>
+
+            {error && (
+                <p style={{color:"red", fontSize:"14px", marginTop:"5px"}}>
+                    {error}
+                </p>
+            )}
 
             <div className="input-group">
                 <label>Adults</label>
