@@ -10,8 +10,10 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: "https://room-booking-system-sigma.vercel.app",
-  methods: ["GET","POST","PUT","DELETE"],
+  origin: [
+    "http://localhost:5173",
+    "https://room-booking-system-sigma.vercel.app"
+  ],
   credentials: true
 }));
 

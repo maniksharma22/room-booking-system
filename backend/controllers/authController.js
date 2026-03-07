@@ -8,57 +8,66 @@ export const register = async (req, res) => {
 
   try {
 
+    const [existing] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const sql = "INSERT INTO users (name,email,password) VALUES (?,?,?)";
+    await db.query(
+      "INSERT INTO users (name,email,password) VALUES (?,?,?)",
+      [name, email, hashedPassword]
+    );
 
-    db.query(sql, [name, email, hashedPassword], (err, result) => {
-
-      if (err) {
-
-        if (err.code === "ER_DUP_ENTRY") {
-          return res.status(400).json({ message: "Email already registered" });
-        }
-
-        return res.status(500).json(err);
-      }
-
-      res.json({ message: "User registered successfully" });
-
-    });
+    res.json({ message: "User registered successfully" });
 
   } catch (error) {
-
-    res.status(500).json(error);
-
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
   }
 
 };
+export const login = async (req, res) => {
 
-export const login = (req, res) => {
   const { email, password } = req.body;
 
-  const sql = "SELECT * FROM users WHERE email=?";
+  try {
 
-  db.query(sql, [email], async (err, result) => {
-    if (err) return res.status(500).json(err);
+    const [rows] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
-    if (result.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+    if (rows.length === 0) {
+      return res.status(400).json({ message: "User not found" });
     }
 
-    const user = result[0];
+    const user = rows[0];
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user.id }, "secretkey", {
-      expiresIn: "1d"
-    });
+    const token = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     res.json({ token, user });
-  });
+
+  } catch (err) {
+
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+
+  }
+
 };

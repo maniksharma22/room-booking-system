@@ -1,11 +1,16 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import MyBookings from "./pages/MyBookings";
 import Navbar from "./components/Navbar";
+
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" />;
+}
 
 function App() {
 
@@ -20,8 +25,18 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/mybookings" element={<MyBookings />} />
+
+        <Route path="/dashboard" element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        } />
+
+        <Route path="/mybookings" element={
+          <PrivateRoute>
+            <MyBookings />
+          </PrivateRoute>
+        } />
 
       </Routes>
 
