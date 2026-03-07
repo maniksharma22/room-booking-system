@@ -11,16 +11,23 @@ function BookingForm({ roomId }) {
 
     const navigate = useNavigate();
 
+    const today = new Date().toISOString().split("T")[0];
+
     const handleBooking = async (e) => {
 
         e.preventDefault();
 
+        if (!startDate || !endDate) {
+            alert("Please select check-in and check-out dates");
+            return;
+        }
+
         const start = new Date(startDate);
         const end = new Date(endDate);
 
-        // ❌ Wrong date validation
         if (end <= start) {
             alert("Check-out date must be after check-in date");
+            window.location.reload();
             return;
         }
 
@@ -36,16 +43,13 @@ function BookingForm({ roomId }) {
 
             alert("Booking successful");
 
-            setStartDate("");
-            setEndDate("");
-            setAdults(1);
-            setChildren(0);
-
-            navigate("/mybookings");
+            window.location.reload();
 
         } catch (err) {
 
             alert(err.response?.data?.message || "Booking failed");
+
+            window.location.reload();
 
         }
 
@@ -59,6 +63,7 @@ function BookingForm({ roomId }) {
                 <label>Check In</label>
                 <input
                     type="date"
+                    min={today}
                     value={startDate}
                     required
                     onChange={(e) => setStartDate(e.target.value)}
@@ -69,6 +74,7 @@ function BookingForm({ roomId }) {
                 <label>Check Out</label>
                 <input
                     type="date"
+                    min={startDate || today}
                     value={endDate}
                     required
                     onChange={(e) => setEndDate(e.target.value)}
