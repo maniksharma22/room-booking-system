@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
- baseURL: "https://room-booking-api-c8kn.onrender.com/api"
+  baseURL: "https://room-booking-api-c8kn.onrender.com/api"
 });
 
 API.interceptors.request.use((req) => {
